@@ -13,38 +13,35 @@ var margin = {
         bottom: 0,
         left: 0
     },
-    width = 1400 - margin.left - margin.right,
+    width = 1100 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
-// number of data elements
-var n = 30
+
+var SmileN = 30
 var emoj = [];
 
 const root = d3.select('#root');
 
 
-// Returns a random integer between min (inclusive) and max (inclusive)
-
 function Random2(min, max) {
-    return Math.floor(Math.random() * (max - min)) ;
+    return (Math.random() * (max - min)) ;
 }
 
-for (i in d3.range(n)) {
-    var emoj_loc = Random2(0, width*0.4);
+for (i in d3.range(SmileN)) {
+    var emoj_loc = Random2(0, width*0.7);
     emoj.push(emoj_loc);
 }
 
-// Draw the initial SVG
+
 var svg = root.append("svg")
-    .attr("width", width/0.7)
+    .attr("width", width/0.6)
     .attr("height", height/0.7)
 
-// Smile svg path
 var emoj_path = {
     fill: "#ffef64",
     stroke: "#000000",
 
-sad:    "M 239.612 427.468 C 239.612 314.325 340.431 222.468 464.612 222.468 C 588.792 222.468 689.612 314.325 689.612 427.468 C 689.612 540.61 588.792 632.468 464.612 632.468 C 340.431 632.468 239.612 540.61 239.612 427.468 Z" +
+    sad:    "M 239.612 427.468 C 239.612 314.325 340.431 222.468 464.612 222.468 C 588.792 222.468 689.612 314.325 689.612 427.468 C 689.612 540.61 588.792 632.468 464.612 632.468 C 340.431 632.468 239.612 540.61 239.612 427.468 Z" +
     "M 315.833 417.03 C 315.833 401.148 328.394 388.255 343.866 388.255 C 359.338 388.255 371.9 401.148 371.9 417.03 C 371.9 432.911 359.338 445.805 343.866 445.805 C 328.394 445.805 315.833 432.911 315.833 417.03 Z"+
     " M 335.713 412.046 C 335.713 408.569 338.463 405.745 341.851 405.745 C 345.239 405.745 347.989 408.569 347.989 412.046 C 347.989 415.523 345.239 418.346 341.851 418.346 C 338.463 418.346 335.713 415.523 335.713 412.046 Z"+
     " M 539.184 417.03 C 539.184 401.148 551.745 388.255 567.217 388.255 C 582.689 388.255 595.251 401.148 595.251 417.03 C 595.251 432.911 582.689 445.805 567.217 445.805 C 551.745 445.805 539.184 432.911 539.184 417.03 Z "+
@@ -75,47 +72,64 @@ var svgPaths = svg.selectAll(".emoj_path")
     .style("transform", function(d) {
         return '' + "scale(.18) rotate(" + Random2(0, 180) + "deg)" + ''
     })
-    //moving the svgs
     .style("transform-origin", function(d) {
         return '' + (d + Random2(0, width*0.7)+150) + 'px' + ' ' + (Random2(0, height*0.8)+200) + 'px' + ''
     })
 
-/*
-
-parte del colore
-                            .on('mouseover', function(smile) {
-                               // if(d3.select(this).getAttribute("smile") === emoj_path.smile)
-                                d3.select(this)
-                                    .transition().duration(2) //Set transition
-                                    .style('stroke', 'rgb(222, 255, 0)')
-                                    .style('fill', 'rgb(0, 255, 0)')
-                                    .style('stroke-width', '10')
-                            })
-                            .on('mouseout', function(smile) {
-                                d3.select(this)
-                                    .transition().duration(2)
-                                    .style('stroke', emoj_path.stroke)
-                                    .style("fill", emoj_path.fill)
-                                    .style('stroke-width', '10')
-                            })
-
-                            */
-
-
-    .on('click', function() {
-        d3.select(this).attr("d", emoj_path.sad)
-        d3.select(this).transition().duration(5000).style("transform-origin", function (d) {
-            return '' + (3000) + 'px' + ' ' + (Random2(0, height * 0.8) + 200) + 'px' + ''
-        }).each("end",function(){
-            d3.select(this).style("transform", function() {
-                return '' + (Random2(0, width*0.7)+150) + 'px' + ' ' + (Random2(0, height*0.8)+200) + 'px' + ''
-            })
-
-        })
-
-
-
+    .on('click', function(){
+        ext(this)
     })
 
+
+
+
+
+function ext(emojapp) {
+
+    d3.select(emojapp).attr("d", emoj_path.sad).style("fill","#ff0000")
+    d3.select(emojapp).transition().duration(5000).style("transform-origin", function () {
+        var a =Math.random()
+        var b=Math.random()
+
+        //random choise of the output side
+
+        if(a<0.25)
+        // left side
+            if(b<0.5)
+                return '' + ( (Random2(0, width )+200) *-1) + 'px' + ' ' + (Random2(0, height )) + 'px' + ''
+            else
+                return '' + (( Random2(0, width )+200) *-1) + 'px' + ' ' + (Random2(0, height)*-1) + 'px' + ''
+        else
+        if(a<0.5)
+        // right side
+            if(b<0.5)
+                return '' + ( width*2) + 'px' + ' ' + (Random2(0, height ) ) + 'px' + ''
+            else
+                return '' + ( width*2) + 'px' + ' ' + (Random2(0, height)*-1) + 'px' + ''
+        else
+        if(a<0.75)
+        //upper side
+            if(b<0.5)
+                return '' + ( Random2(0, width )) + 'px' + ' ' + ((Random2(0, height )+200) *-1) + 'px' + ''
+            else
+                return '' + ( Random2(0, width )*-1) + 'px' + ' ' + ((Random2(0, height)+200)*-1) + 'px' + ''
+
+        else
+        if(a<1)
+        //lower side
+            if(b<0.5)
+                return '' + ( Random2(0, width ) ) + 'px' + ' ' + (height*2) + 'px' + ''
+            else
+                return '' + ( Random2(0, width )*-1 ) + 'px' + ' ' + (height*2) + 'px' + ''
+    })
+
+    setTimeout(function(){
+        d3.select(emojapp).attr("d", emoj_path.smile).style("fill","#00ff00").style("transform-origin", function () {
+            return '' + ( Random2(0, width * 0.7) + 250) + 'px' + ' ' + (Random2(0, height * 0.8) + 200) + 'px' + ''
+        })},6000)
+    setTimeout(function(){
+        d3.select(emojapp).style("fill",emoj_path.fill)},7000)
+
+}
 
 
